@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Detail Dealer (Prototype)</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:"Helvetica Neue",Arial,sans-serif;font-size:12px;color:#333;background:#f7f8fa}
+.nav{background:#e86e0a;color:#fff;height:48px;display:flex;align-items:center;padding:0 16px;gap:14px}
+.nav .brand{font-size:15px;flex:1}
+.nav a{color:#fff;text-decoration:none;font-size:12px;margin-left:14px}
+.proto{background:#fff8e1;border-bottom:1px solid #f0d58a;color:#8a6d00;text-align:center;padding:6px;font-size:11px}
+.wrap{max-width:1000px;margin:24px auto;padding:0 12px}
+input{width:100%;height:26px;border:1px solid #ddd;padding:0 8px;font-size:11px;border-radius:2px;min-width:80px}
+.btn{border:0;border-radius:3px;padding:0 14px;height:30px;font-size:12px;font-weight:bold;cursor:pointer;color:#fff;display:inline-block;line-height:30px;text-decoration:none}
+.b-bl{background:#2d91e0}.b-gr{background:#eee;color:#333;font-weight:normal}
+.tools{display:flex;justify-content:space-between;margin-bottom:10px}
+.tw{overflow-x:auto;background:#fff}
+table{border-collapse:collapse;width:100%;min-width:1500px}
+th{border:1px solid #ddd;padding:9px 8px;text-align:center;font-weight:normal;background:#fff;white-space:nowrap;font-size:11px}
+td{border:1px solid #e5e5e5;padding:7px 8px;font-size:11px;white-space:nowrap}
+tbody tr:nth-child(even){background:#fafafa}
+h3{margin:0 0 4px;font-size:14px}
+.note{font-size:11px;color:#888;margin:4px 0 10px}
+.pg{padding:10px 2px;color:#666}
+</style>
+</head>
+<body>
+<div class="nav"><span>&#9776;</span><span class="brand">Dealer Management System</span>
+<a href="#">&#8962; Home</a><a href="#">Administrasi &#9662;</a><a href="#">Bahasa &#9662;</a><a href="#">Akun &#9662;</a></div>
+<div class="proto">PROTOTYPE UI &mdash; seluruh isi tabel adalah data contoh, bukan data asli.</div>
+<div class="wrap">
+ <div class="tools"><a class="btn b-gr" href="index.html">&#8592; Kembali</a><button class="btn b-bl" onclick="alert('Prototype: EXPORT belum aktif.')">EXPORT</button></div>
+ <h3 id="dt"></h3>
+ <div class="note">tgl isi berdasarkan tipe prospect, kalau add new = tgl create suspect, kalau new assign = tgl assign dealer</div>
+ <div class="tw"><table id="td"></table></div>
+ <div class="pg" id="info"></div>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+const P=new URLSearchParams(location.search);
+$('dt').textContent='Dealer '+(P.get('kode')||'X0001')+' - '+(P.get('nama')||'Dealer Contoh Satu');
+const COLS=['No','id data (LMS)','Nama Prospect','ID FLP','Nama FLP','Tipe Prospect','tgl assign FLP / create suspect','No Tlp','No HP','No HP Lain','Alamat','Kecamatan','Kabupaten/Kota','Sumber Prospect Awal','Sumber Prospect Akhir','Kategori Unit','Unit','Tipe Pembayaran','Tgl FollowUp','Last Followup'];
+const ROWS=[
+[1,'LMS-0001','Budi Contoh','FLP01','Sales Satu','Add New','2026-07-02','-','081200000001','','Jl. Contoh No 1','Kecamatan A','Kab. Contoh','-','CRM H1','Matic','Unit Matic 160','Credit','2026-07-05','2026-07-05 00:11'],
+[2,'LMS-0002','Siti Contoh','FLP01','Sales Satu','Add New','2026-07-03','-','081200000002','','Jl. Contoh No 2','Kecamatan A','Kab. Contoh','tiktok','CRM H1','Matic','Unit Matic 125','Cash','2026-07-03','2026-07-03 08:23'],
+[3,'LMS-0003','Andi Contoh','FLP02','Sales Dua','New Assign','2026-07-10','-','081200000003','-','Jl. Contoh No 3','Kecamatan B','Kab. Contoh','buku tamu','CRM H1','Sport','Unit Sport 150','Cash','2026-07-14','2026-07-14 14:50'],
+[4,'LMS-0004','Rina Contoh','FLP02','Sales Dua','New Assign','2026-07-20','-','081200000004','','Jl. Contoh No 4','Kecamatan B','Kab. Contoh','-','CRM H2ds','Cub','Unit Cub 110','Credit','2026-07-24','2026-07-24 11:25'],
+[5,'LMS-0005','Dewi Contoh','FLP03','Sales Tiga','Add New','2026-07-22','-','081200000005','','Jl. Contoh No 5','Kecamatan C','Kab. Contoh','-','CRM H2dl','Matic','Unit Matic 160','Cash','2026-07-25','2026-07-25 09:00']];
+const CF=[];
+$('td').innerHTML='<thead><tr>'+COLS.map(c=>'<th>'+c+'</th>').join('')+'</tr><tr>'+COLS.map((c,i)=>'<th style="padding:4px"><input class="cs" data-i="'+i+'" placeholder="Cari"></th>').join('')+'</tr></thead><tbody id="tdb"></tbody>';
+document.querySelectorAll('.cs').forEach(e=>e.addEventListener('input',()=>{CF[+e.dataset.i]=e.value.trim().toLowerCase();render()}));
+function render(){
+  const r=ROWS.filter(x=>CF.every((f,i)=>!f||String(x[i]).toLowerCase().includes(f)));
+  $('tdb').innerHTML=r.map(x=>'<tr>'+x.map(c=>'<td>'+c+'</td>').join('')+'</tr>').join('')||'<tr><td colspan="20" style="text-align:center;color:#888">Tidak ada data</td></tr>';
+  $('info').textContent='Menampilkan '+r.length+' dari '+ROWS.length+' data (contoh)';
+}
+render();
+</script>
+</body>
+</html>
