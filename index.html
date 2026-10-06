@@ -3,15 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Data RO per Dealer (Prototype)</title>
+<title>Report RO per Dealer (Prototype + SpecProg)</title>
 <style>
 *{box-sizing:border-box}
 body{margin:0;font-family:"Helvetica Neue",Arial,sans-serif;font-size:12px;color:#333;background:#f7f8fa}
-.nav{background:#e86e0a;color:#fff;height:48px;display:flex;align-items:center;padding:0 16px;gap:14px}
-.nav .brand{font-size:15px;flex:1}
+.nav{background:#e86e0a;color:#fff;min-height:48px;display:flex;align-items:center;flex-wrap:wrap;padding:6px 16px;gap:6px 14px}
+.nav .brand{font-size:15px;flex:1;min-width:180px}
 .nav a{color:#fff;text-decoration:none;font-size:12px;margin-left:14px}
+.ribbon{background:#fff;border-bottom:2px solid #e86e0a;display:flex;gap:2px;padding:0 12px;overflow-x:auto}
+.ribbon button{border:0;background:none;padding:11px 16px;font-size:12px;cursor:pointer;color:#555;white-space:nowrap;border-bottom:3px solid transparent;margin-bottom:-2px}
+.ribbon button.on{color:#e86e0a;font-weight:bold;border-bottom-color:#e86e0a}
+.sub{background:#fdf3ea;border-bottom:1px solid #f0d9c4;display:flex;flex-wrap:wrap;gap:4px;padding:8px 12px}
+.sub button{border:1px solid #e9cdb3;background:#fff;border-radius:14px;padding:5px 12px;font-size:11px;cursor:pointer;color:#6b4a2c}
+.sub button.on{background:#e86e0a;border-color:#e86e0a;color:#fff}
 .proto{background:#fff8e1;border-bottom:1px solid #f0d58a;color:#8a6d00;text-align:center;padding:6px;font-size:11px}
-.wrap{max-width:1000px;margin:24px auto;padding:0 12px}
+.wrap{max-width:1040px;margin:22px auto;padding:0 12px}
 .panel{background:#fff;border:1px solid #ddd}
 .panel>.hd{padding:8px 10px;cursor:pointer;user-select:none}
 .panel>.bd{padding:6px 10px 12px}
@@ -22,23 +28,52 @@ input,select{width:100%;height:32px;border:1px solid #ddd;background:#fff;paddin
 .b-or{background:#e86e0a}.b-bl{background:#2d91e0}.b-gr{background:#eee;color:#333;font-weight:normal}
 .row{display:flex;justify-content:space-between;align-items:center;margin-top:14px}
 .tools{display:flex;justify-content:flex-end;gap:5px;margin:10px 0}
-.tw{overflow-x:auto;background:#fff}
+.tw{overflow-x:auto;background:#fff;border:1px solid #e3e3e3}
 table{border-collapse:collapse;width:100%;min-width:760px}
-th{border:1px solid #ddd;padding:9px 8px;text-align:center;font-weight:normal;background:#fff;white-space:nowrap;font-size:11px}
-td{border:1px solid #e5e5e5;padding:7px 8px;font-size:11px}
+th{border:1px solid #ddd;padding:8px;text-align:left;font-weight:bold;background:#fafafa;font-size:11px;vertical-align:top}
+.tw.ctr th{text-align:center;font-weight:normal;background:#fff;white-space:nowrap}
+td{border:1px solid #e5e5e5;padding:7px 8px;font-size:11px;vertical-align:top}
 td.n{text-align:right}
 tbody tr:nth-child(even){background:#fafafa}
 .cs{height:26px;font-size:11px;min-width:70px}
 .pg{padding:10px 2px;color:#666}
 .hid{display:none}
+/* SpecProg */
+.sp h2{font-size:17px;margin:0 0 6px;color:#222}
+.sp h3{font-size:13px;margin:22px 0 6px;color:#b34f00}
+.sp p,.sp li{line-height:1.6;font-size:12px}
+.sp ul,.sp ol{margin:6px 0 6px 20px;padding:0}
+.sp .lead{color:#666;margin:0 0 14px}
+.card{background:#fff;border:1px solid #e3e3e3;border-radius:3px;padding:12px 14px;margin:10px 0}
+.warn{background:#fff6e0;border:1px solid #f0d58a;border-radius:3px;padding:10px 14px;margin:10px 0}
+.ok{background:#eaf6ec;border:1px solid #b9dcc0;border-radius:3px;padding:10px 14px;margin:10px 0}
+code{background:#f1f1f1;padding:1px 5px;border-radius:2px;font-family:Consolas,monospace;font-size:11px}
+pre{background:#1e2229;color:#e6e8ec;padding:12px 14px;border-radius:3px;overflow-x:auto;font-family:Consolas,monospace;font-size:11px;line-height:1.5;margin:6px 0}
+.cp{float:right;margin:-2px 0 0 8px;font-size:10px;padding:2px 8px;border:0;border-radius:2px;background:#e86e0a;color:#fff;cursor:pointer}
+.tag{display:inline-block;padding:1px 7px;border-radius:9px;font-size:10px;font-weight:bold;white-space:nowrap}
+.t-v{background:#d9f0dd;color:#1d6b2e}.t-u{background:#fff0c9;color:#7a5c00}.t-c{background:#fde0dc;color:#a3281c}.t-d{background:#e1ecfb;color:#1f4f8a}
+.flow{display:flex;flex-wrap:wrap;align-items:stretch;gap:8px;margin:10px 0}
+.fb{flex:1 1 150px;border:1px solid #e9cdb3;background:#fff;border-radius:3px;padding:8px 10px;font-size:11px}
+.fb b{display:block;color:#b34f00;margin-bottom:3px}
+.ar{align-self:center;color:#e86e0a;font-weight:bold}
+.kv{display:grid;grid-template-columns:150px 1fr;gap:4px 12px;font-size:12px}
+.kv div:nth-child(odd){color:#888}
+@media(max-width:600px){.grid{grid-template-columns:1fr}.kv{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <div class="nav"><span>&#9776;</span><span class="brand">Dealer Management System</span>
 <a href="#">&#8962; Home</a><a href="#">Administrasi &#9662;</a><a href="#">Bahasa &#9662;</a><a href="#">Akun &#9662;</a></div>
-<div class="proto">PROTOTYPE UI &mdash; seluruh isi tabel adalah data contoh, bukan data asli.</div>
 
-<div class="wrap">
+<div class="ribbon" id="rb">
+ <button class="on" data-m="proto">Tampilan (Prototype)</button>
+ <button data-m="spec">Spesifikasi Program (SpecProg)</button>
+</div>
+
+<!-- ===================== PROTOTYPE ===================== -->
+<div id="m-proto">
+<div class="proto">PROTOTYPE UI &mdash; seluruh isi tabel adalah data contoh, bukan data asli. Sumber data sebenarnya dijelaskan di tab "Spesifikasi Program" (Database, Spesifikasi Aplikasi, Query).</div>
+<div class="wrap" id="v1">
  <div class="panel">
   <div class="hd" onclick="document.getElementById('fb').classList.toggle('hid')">&#9662; Filter Data RO per Dealer</div>
   <div class="bd" id="fb">
@@ -50,38 +85,744 @@ tbody tr:nth-child(even){background:#fafafa}
   </div>
  </div>
  <div class="tools"><button class="btn b-bl" onclick="alert('Prototype: EXPORT belum aktif.')">EXPORT</button></div>
- <div class="tw"><table id="tb"></table></div>
+ <div class="tw ctr"><table id="tb"></table></div>
  <div class="pg" id="info"></div>
+</div>
+<div class="wrap hid" id="v2">
+ <div class="tools" style="justify-content:space-between;margin-top:0"><button class="btn b-gr" id="bBack">&#8592; Kembali</button><button class="btn b-bl" onclick="alert('Prototype: EXPORT belum aktif.')">EXPORT</button></div>
+ <h3 id="dt" style="margin:0 0 4px;font-size:14px"></h3>
+ <div style="font-size:11px;color:#888;margin:4px 0 10px">tgl isi berdasarkan tipe prospect, kalau add new = tgl create suspect, kalau new assign = tgl assign dealer</div>
+ <div class="tw ctr"><table id="td" style="min-width:1700px"></table></div>
+ <div class="pg" id="dinfo"></div>
+</div>
+</div>
+
+<!-- ===================== SPECPROG ===================== -->
+<div id="m-spec" class="hid">
+ <div class="sub" id="sb"></div>
+ <div class="wrap sp" id="sp"></div>
 </div>
 
 <script>
 const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* ================= PROTOTYPE ================= */
 const BULAN=['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
 const HEAD=['','Kode Dealer','Nama Dealer','SSU isi nama','Sama - CRM H1','Sama - CRM H2ds','Sama - CRM H2dl','Beda - CRM H1','Beda - CRM H2ds','Beda - CRM H2dl'];
-/* DATA CONTOH */
 const ROWS=[
-['X0001','Dealer Contoh Satu',571,4,0,0,93,0,0],
-['X0002','Dealer Contoh Dua',264,35,1,0,12,0,0],
-['X0003','Dealer Contoh Tiga',258,62,0,0,7,2,0],
-['X0004','Dealer Contoh Empat',225,0,0,0,0,0,0],
-['X0005','Dealer Contoh Lima',81,43,0,2,5,0,1],
-['X0006','Dealer Contoh Enam',117,1,0,0,20,0,0],
-['X0007','Dealer Contoh Tujuh',100,0,0,0,3,1,0],
-['X0008','Dealer Contoh Delapan',342,87,4,0,55,3,0]];
+['X0001','Dealer Contoh Satu',571,4,0,0,93,0,0],['X0002','Dealer Contoh Dua',264,35,1,0,12,0,0],
+['X0003','Dealer Contoh Tiga',258,62,0,0,7,2,0],['X0004','Dealer Contoh Empat',225,0,0,0,0,0,0],
+['X0005','Dealer Contoh Lima',81,43,0,2,5,0,1],['X0006','Dealer Contoh Enam',117,1,0,0,20,0,0],
+['X0007','Dealer Contoh Tujuh',100,0,0,0,3,1,0],['X0008','Dealer Contoh Delapan',342,87,4,0,55,3,0]];
 BULAN.forEach((b,i)=>{const o=document.createElement('option');o.value=i;o.textContent=b;$('f_bl').appendChild(o)});
 ['2025','2026','2027'].forEach(y=>{const o=document.createElement('option');o.textContent=y;$('f_th').appendChild(o)});
-const now=new Date();
-$('f_bl').value=now.getMonth();$('f_th').value=String(now.getFullYear());
+const now=new Date();$('f_bl').value=now.getMonth();$('f_th').value=String(now.getFullYear());
 const CF=[];
 $('tb').innerHTML='<thead><tr>'+HEAD.map(x=>'<th>'+x+'</th>').join('')+'</tr><tr>'+HEAD.map((x,i)=>i?'<th style="padding:4px"><input class="cs" data-i="'+(i-1)+'" placeholder="Cari"></th>':'<th></th>').join('')+'</tr></thead><tbody id="tbb"></tbody>';
 document.querySelectorAll('.cs').forEach(e=>e.addEventListener('input',()=>{CF[+e.dataset.i]=e.value.trim().toLowerCase();apply()}));
 function clr(){CF.length=0;document.querySelectorAll('.cs').forEach(e=>e.value='');$('f_bl').value=now.getMonth();$('f_th').value=String(now.getFullYear());apply()}
 function apply(){
   const r=ROWS.filter(x=>CF.every((f,i)=>!f||String(x[i]).toLowerCase().includes(f)));
-  $('tbb').innerHTML=r.map(x=>'<tr><td style="text-align:center"><a class="btn b-bl" style="height:26px;line-height:26px;font-weight:normal" href="detail.html?kode='+x[0]+'&nama='+encodeURIComponent(x[1])+'">Detail</a></td><td>'+x[0]+'</td><td>'+x[1]+'</td>'+x.slice(2).map(v=>'<td class="n">'+v+'</td>').join('')+'</tr>').join('')||'<tr><td colspan="10" style="text-align:center;color:#888">Tidak ada data</td></tr>';
+  $('tbb').innerHTML=r.map(x=>'<tr><td style="text-align:center"><button class="btn b-bl" style="height:26px;line-height:26px;font-weight:normal" data-k="'+x[0]+'">Detail</button></td><td>'+x[0]+'</td><td>'+x[1]+'</td>'+x.slice(2).map(v=>'<td class="n">'+v+'</td>').join('')+'</tr>').join('')||'<tr><td colspan="10" style="text-align:center;color:#888">Tidak ada data</td></tr>';
   $('info').textContent='Menampilkan '+r.length+' dari '+ROWS.length+' dealer (contoh) — '+BULAN[+$('f_bl').value]+' '+$('f_th').value;
 }
 apply();
+
+/* ---- halaman detail (di dalam file yang sama) ---- */
+const DCOLS=['No','id data (LMS)','Nama Prospect','ID FLP','Nama FLP','Tipe Prospect','tgl assign FLP / create suspect','No Tlp','No HP','No HP Lain','Alamat','Kecamatan','Kabupaten/Kota','Sumber Prospect Awal','Sumber Prospect Akhir','Kategori Unit','Unit','Tipe Pembayaran','Tgl FollowUp','Last Followup'];
+const DROWS=[
+[1,'LMS-0001','Budi Contoh','FLP01','Sales Satu','Add New','2026-07-02','-','081200000001','','Jl. Contoh No 1','Kecamatan A','Kab. Contoh','-','CRM H1','Matic','Unit Matic 160','Credit','2026-07-05','2026-07-05 00:11'],
+[2,'LMS-0002','Siti Contoh','FLP01','Sales Satu','Add New','2026-07-03','-','081200000002','','Jl. Contoh No 2','Kecamatan A','Kab. Contoh','tiktok','CRM H1','Matic','Unit Matic 125','Cash','2026-07-03','2026-07-03 08:23'],
+[3,'LMS-0003','Andi Contoh','FLP02','Sales Dua','New Assign','2026-07-10','-','081200000003','-','Jl. Contoh No 3','Kecamatan B','Kab. Contoh','buku tamu','CRM H1','Sport','Unit Sport 150','Cash','2026-07-14','2026-07-14 14:50'],
+[4,'LMS-0004','Rina Contoh','FLP02','Sales Dua','New Assign','2026-07-20','-','081200000004','','Jl. Contoh No 4','Kecamatan B','Kab. Contoh','-','CRM H2ds','Cub','Unit Cub 110','Credit','2026-07-24','2026-07-24 11:25'],
+[5,'LMS-0005','Dewi Contoh','FLP03','Sales Tiga','Add New','2026-07-22','-','081200000005','','Jl. Contoh No 5','Kecamatan C','Kab. Contoh','-','CRM H2dl','Matic','Unit Matic 160','Cash','2026-07-25','2026-07-25 09:00']];
+const DF=[];
+$('td').innerHTML='<thead><tr>'+DCOLS.map(c=>'<th>'+esc(c)+'</th>').join('')+'</tr><tr>'+DCOLS.map((c,i)=>'<th style="padding:4px"><input class="cs dcs" data-i="'+i+'" placeholder="Cari"></th>').join('')+'</tr></thead><tbody id="tdb"></tbody>';
+document.querySelectorAll('.dcs').forEach(e=>e.addEventListener('input',()=>{DF[+e.dataset.i]=e.value.trim().toLowerCase();renderDetail()}));
+function renderDetail(){
+  const r=DROWS.filter(x=>DF.every((f,i)=>!f||String(x[i]).toLowerCase().includes(f)));
+  $('tdb').innerHTML=r.map(x=>'<tr>'+x.map(c=>'<td style="white-space:nowrap">'+esc(c)+'</td>').join('')+'</tr>').join('')||'<tr><td colspan="20" style="text-align:center;color:#888">Tidak ada data</td></tr>';
+  $('dinfo').textContent='Menampilkan '+r.length+' dari '+DROWS.length+' data (contoh)';
+}
+$('tbb').addEventListener('click',e=>{
+  const b=e.target.closest('button[data-k]'); if(!b)return;
+  const d=ROWS.find(x=>x[0]===b.dataset.k);
+  $('dt').textContent='Dealer '+d[0]+' - '+d[1];
+  DF.length=0;document.querySelectorAll('.dcs').forEach(i=>i.value='');
+  renderDetail();
+  document.querySelector('#m-proto .proto').classList.add('hid');
+  $('v1').classList.add('hid');$('v2').classList.remove('hid');window.scrollTo(0,0);
+});
+$('bBack').onclick=()=>{$('v2').classList.add('hid');$('v1').classList.remove('hid');document.querySelector('#m-proto .proto').classList.remove('hid')};
+
+/* ================= SPECPROG ================= */
+const T=(h,rows,cls)=>'<div class="tw '+(cls||'')+'"><table><thead><tr>'+h.map(x=>'<th>'+x+'</th>').join('')+'</tr></thead><tbody>'+rows.map(r=>'<tr>'+r.map(c=>'<td>'+c+'</td>').join('')+'</tr>').join('')+'</tbody></table></div>';
+const TAG={v:'<span class="tag t-v">Terverifikasi</span>',u:'<span class="tag t-u">Usulan</span>',c:'<span class="tag t-c">Perlu konfirmasi</span>',d:'<span class="tag t-d">Turunan</span>'};
+const CODE={};
+const code=(id)=>'<button class="cp" data-c="'+id+'">Salin</button><pre>'+esc(CODE[id])+'</pre>';
+
+CODE.ssu=`-- Server: srv1 | Database: MPMAX  (produksi, lengkap 2016-01 s/d sekarang)
+-- Parameter: @TglAwal = tanggal 1 bulan terpilih, @TglAkhir = tanggal 1 bulan berikutnya
+DECLARE @TglAwal  date = '2026-09-01';
+DECLARE @TglAkhir date = '2026-10-01';
+
+SELECT CONVERT(char(7), TGLISINAMA, 120) AS periode,
+       KDDEALER                          AS kode_dealer,   -- 5 karakter, mis. H0680
+       COUNT(DISTINCT ENGINENO)          AS ssu            -- unit unik (no mesin)
+FROM   dbo.MPMINVFAKTUR (NOLOCK)
+WHERE  TGLISINAMA >= @TglAwal AND TGLISINAMA < @TglAkhir
+GROUP  BY CONVERT(char(7), TGLISINAMA, 120), KDDEALER;`;
+
+CODE.bill=`-- Unit RO yang SUDAH di-invoice pada bulan terpilih
+-- Jalankan di: srv2 database sdms-mso  DAN  di setiap database dealer NMSO srv3 (sdms-dlr-<kode>, 663 DB)
+DECLARE @TglAwal date = '2026-09-01', @TglAkhir date = '2026-10-01';
+
+SELECT b.idbilling, b.billingnumber, b.dtcreate AS tgl_invoice,
+       b.idinternal AS idinternal_billing, b.idbiltyp,
+       oi.idframe, oi.idmachine,
+       r.idprospect, r.idprosou AS prosou_req, p.idprosou AS prosou_prospect,
+       p.idinternal AS idinternal_prospect
+FROM   dbo.billing b (NOLOCK)
+JOIN   dbo.billing_item bi (NOLOCK)        ON bi.idbilling = b.idbilling
+JOIN   dbo.order_billing_item obi (NOLOCK) ON obi.idbilite = bi.idbilite
+JOIN   dbo.order_item oi (NOLOCK)          ON oi.idordite  = obi.idordite
+JOIN   dbo.vehicle_sales_order vso (NOLOCK) ON vso.idorder = oi.idorder
+JOIN   dbo.sales_unit_requirement r (NOLOCK) ON r.idreq    = vso.idunitreq
+LEFT JOIN dbo.prospect p (NOLOCK)          ON p.idprospect = r.idprospect
+LEFT JOIN dbo.billing_cancel bc (NOLOCK)   ON bc.idbilling = b.idbilling
+WHERE  b.idbiltyp IN (10,110,111,112,113,114)      -- penjualan kendaraan
+  AND  b.dtcreate >= @TglAwal AND b.dtcreate < @TglAkhir
+  AND  bc.idbilling IS NULL                        -- bukan invoice batal
+  AND  ISNULL(oi.idframe,'') <> ''                 -- harus ada no rangka
+  AND  (r.idprosou IN (77,78,79) OR p.idprosou IN (77,78,79));  -- hanya source CRM`;
+
+CODE.ro=`-- Status RO dari tabel trxhistoryrobd (database sdms_consolidation, srv2)
+-- Kolom yang dipakai: idProspect, isSystem, norangkaOld, tglisinamaOld, createddate
+-- + kodedealer  (KOLOM BARU yang akan ditambahkan di consolidation; belum ada saat dokumen ini dibuat)
+SELECT DISTINCT idProspect, isSystem,
+       UPPER(LTRIM(RTRIM(kodedealer))) AS kode_dealer_trx   -- 5 karakter, mis. H0680; bisa kosong untuk baris lama
+FROM   dbo.trxhistoryrobd
+WHERE  idProspect IS NOT NULL;
+
+-- isSystem = 1 : RO tanpa data unit lama           -> source awal dianggap SAMA
+-- isSystem = 0 : RO dengan data unit lama (norangkaOld, tglisinamaOld); idProspect = prospek BARU hasil sistem.
+--                Source awal = source prospek LAMA sebelum di-drop (lihat Aturan Hitung di tab Spesifikasi Aplikasi)`;
+
+CODE.nik=`-- SOURCE AWAL = source prospek LAMA sebelum di-drop (aturan 3.4).
+-- Jalankan di database yang sama dengan prospek baru (sdms-mso atau database NMSO dealer).
+-- #ids berisi idProspect dari trxhistoryrobd (isSystem = 0), diisi lebih dulu (temp table).
+SELECT n.idprospect                      AS idprospect_baru,
+       n.idprosou                        AS source_ro,          -- 77/78/79
+       n.dtcreated                       AS dtcreated_baru,
+       o.idprospect                      AS idprospect_lama,
+       o.idprosou                        AS source_awal,
+       psl.description                   AS source_awal_desc,
+       o.dtcreated                       AS dtcreated_lama,
+       d.dtfrom                          AS tgl_completed_drop,  -- NULL = prospek lama tidak berstatus Completed Drop
+       CASE WHEN o.idprospect IS NULL THEN 'Tanpa pembanding'
+            WHEN o.idprosou = n.idprosou THEN 'Sama' ELSE 'Beda' END AS hasil
+FROM   #ids x
+JOIN   dbo.prospect n (NOLOCK) ON n.idprospect = x.idprospect
+OUTER APPLY (                              -- prospek lama: nomor prospek sama, dibuat sebelum prospek baru, bersource
+    SELECT TOP 1 s.idprospect, s.idprosou, s.dtcreated
+    FROM   dbo.prospect s (NOLOCK)
+    WHERE  s.prospectnumber = n.prospectnumber
+      AND  s.idprospect <> n.idprospect
+      AND  s.dtcreated  <  n.dtcreated
+      AND  s.idprosou IS NOT NULL
+    ORDER  BY s.dtcreated DESC             -- yang paling baru sebelum prospek baru
+) o
+LEFT JOIN dbo.prospect_source psl (NOLOCK) ON psl.idprosou = o.idprosou
+OUTER APPLY (                              -- status Completed Drop pada prospek lama (bukti prospek di-drop)
+    SELECT TOP 1 st.dtfrom
+    FROM   dbo.prospect_status st (NOLOCK)
+    WHERE  st.idprospect = o.idprospect AND st.idstatustype = 56
+    ORDER  BY st.dtfrom DESC
+) d;
+
+-- Catatan:
+--  * Hanya SELECT dan temp table. Tidak ada perubahan pada tabel asli.
+--  * Bila prospek lama berada di database dealer yang lain, gabungkan hasil tiap database di ETL
+--    dan cocokkan lewat prospectnumber.
+--  * Kolom tgl_completed_drop dipakai untuk memeriksa hasil; hanya sebagian prospek lama berstatus Completed Drop.`;
+
+CODE.fu=`-- Prospect CRM yang tidak ada di trxhistoryrobd tetapi punya follow-up -> dihitung SAMA
+-- Jalankan di sdms-mso dan setiap DB NMSO, dengan daftar idprospect hasil query billing
+SELECT DISTINCT f.id_prospect AS idprospect
+FROM   dbo.followuplms f (NOLOCK)
+WHERE  f.id_prospect IN (SELECT idprospect FROM #ids);
+-- Catatan performa: followuplms hanya punya PK; JANGAN pakai subquery per baris.
+-- Isi #ids (temp table) dulu, lalu JOIN/IN satu kali.`;
+
+CODE.dealer=`-- Menentukan KODE DEALER (5 karakter) dari billing.idinternal
+-- (a) Database MSO (sdms-mso, srv2): terjemahkan lewat tabel internal
+SELECT idinternal, iddealercode FROM dbo.internal (NOLOCK);   -- iddealercode = kode 5 karakter, mis. H0680
+
+-- (b) Database NMSO (srv3): kode dealer = 5 karakter pertama idinternal
+--     contoh idinternal 'H049001' -> kode dealer 'H0490'
+SELECT LEFT(idinternal, 5) AS kode_dealer;
+
+-- (b2) Setelah kolom baru ada: trxhistoryrobd.kodedealer sudah berisi kode dealer 5 karakter,
+--      jadi dealer RO tidak perlu lagi dicari lewat followuplms/internal untuk baris yang kodedealer-nya terisi.
+--      Baris yang kodedealer-nya kosong tetap memakai (a)/(b) sebagai cadangan.
+
+-- (c) Gabung cabang ke pusat memakai tabel peta (dibuat sekali, dipelihara manual):
+--     ro_rpt_dealer_parent(kode_cabang, kode_pusat)
+
+-- Nama dealer (srv2, sdms_consolidation):
+SELECT dealercode AS kode_dealer, dealerdesc AS nama_dealer FROM dbo.consmstdealer;`;
+
+CODE.kh=`-- Data halaman detail = menu Report > Kegiatan Harian (H1_REPORT_KEGIATAN_HARIAN).
+-- Procedure : dbo.rptKegiatanHarian   (ada di sdms-mso srv2 dan di tiap database NMSO srv3)
+-- Parameter : @pdDateFrom, @pdDateThru (rentang tanggal follow-up), @pdNamaCabang (= idinternal dealer), @pdKorsal ('' = semua)
+-- CATATAN   : procedure membuat temp table (#tmpBase, #tpm_billing, #tmpLastFollowUp) dan meng-UPDATE temp table itu,
+--             bukan tabel asli. Contoh pemanggilan untuk developer (dijalankan oleh akun ETL, bukan oleh penyusun dokumen ini):
+
+EXEC dbo.rptKegiatanHarian
+     @pdDateFrom   = '2026-09-01 00:00:00',
+     @pdDateThru   = '2026-09-30 23:59:59',
+     @pdNamaCabang = '05101',          -- idinternal dealer (MSO: 5 karakter; NMSO: mis. 'H049001')
+     @pdKorsal     = '';
+
+-- Lalu sisakan prospek RO milik dealer itu pada bulan itu:
+--   WHERE [Id Prospect] IN (SELECT idprospect FROM ro_rpt_unit WHERE kode_dealer = @kodeDealer AND periode = '2026-09')
+-- dan hapus duplikat per [Id Prospect].
+
+-- Mencari idinternal sebuah dealer di database MSO:
+SELECT idinternal FROM dbo.internal (NOLOCK) WHERE iddealercode = 'H0680';`;
+
+CODE.ddl=`-- Rancangan tabel laporan (database reporting, mis. sdms_consolidation). Diisi oleh job ETL harian.
+
+CREATE TABLE dbo.ro_rpt_dealer_parent (          -- peta cabang -> pusat
+  kode_cabang  char(5)      NOT NULL PRIMARY KEY,
+  kode_pusat   char(5)      NOT NULL,
+  sumber       varchar(100) NULL,                -- MSO internal / NMSO internal / manual
+  status       varchar(20)  NOT NULL DEFAULT 'Digabung'  -- Digabung / Menunggu konfirmasi
+);
+
+CREATE TABLE dbo.ro_rpt_unit (                    -- satu baris = satu unit RO ter-invoice
+  periode        char(7)       NOT NULL,          -- 'yyyy-MM' dari tanggal invoice
+  idframe        varchar(30)   NOT NULL,          -- no rangka
+  idmachine      varchar(30)   NULL,              -- no mesin
+  billingnumber  varchar(40)   NOT NULL,
+  tgl_invoice    datetime      NOT NULL,
+  kode_dealer    char(5)       NULL,              -- dealer penerbit invoice, sudah digabung ke pusat; NULL = tidak terpetakan
+  kode_dealer_trx char(5)      NULL,              -- trxhistoryrobd.kodedealer (kolom baru); NULL bila prospek tidak ada di trxhistoryrobd.
+                                                  -- Dipakai untuk pencocokan dan halaman detail. Bila berbeda dengan kode_dealer, catat di log ETL.
+  grp_crm        tinyint       NOT NULL,          -- 77 = CRM H1, 78 = CRM H2ds, 79 = CRM H2dl
+  kelas          varchar(4)    NOT NULL,          -- 'Sama' / 'Beda'
+  idprospect     uniqueidentifier NOT NULL,       -- prospek baru (trxhistoryrobd.idProspect)
+  idprospect_lama uniqueidentifier NULL,          -- prospek lama sebelum di-drop; NULL = tanpa pembanding
+  source_awal    int           NULL,              -- prospect.idprosou prospek lama
+  asal           varchar(20)   NOT NULL,          -- 'trxhistoryrobd' / 'followuplms CRM'
+  sumber_db      varchar(40)   NOT NULL,          -- sdms-mso / sdms-dlr-hxxxx
+  CONSTRAINT PK_ro_rpt_unit PRIMARY KEY (periode, idframe)
+);
+
+CREATE TABLE dbo.ro_rpt_detail (                 -- hasil rptKegiatanHarian untuk prospek RO; dibaca halaman detail
+  periode        char(7)          NOT NULL,       -- 'yyyy-MM'
+  kode_dealer    char(5)          NOT NULL,       -- sudah digabung ke pusat
+  idprospect     uniqueidentifier NOT NULL,       -- [Id Prospect]
+  nama_prospect  varchar(150)     NULL,           -- [Nama Prospect]
+  id_flp         varchar(50)      NULL,           -- [idsalesman] / sumber ID FLP (perlu konfirmasi)
+  nama_flp       varchar(150)     NULL,           -- [salesman]
+  tipe_prospect  varchar(20)      NULL,           -- [Tipe Prospect]
+  tgl_assign     datetime         NULL,           -- belum ada di procedure (perlu konfirmasi)
+  no_tlp varchar(30) NULL, no_hp varchar(30) NULL, no_hp_lain varchar(30) NULL,
+  alamat         varchar(300)     NULL,
+  kecamatan      varchar(100)     NULL,
+  kab_kota       varchar(100)     NULL,
+  sumber_awal    varchar(100)     NULL,           -- source prospek lama sebelum di-drop
+  sumber_akhir   varchar(100)     NULL,           -- [Sumber Prospect]
+  kategori_unit  varchar(100)     NULL,
+  unit           varchar(200)     NULL,
+  tipe_pembayaran varchar(50)     NULL,
+  tgl_followup   datetime         NULL,
+  last_followup  datetime         NULL,
+  CONSTRAINT PK_ro_rpt_detail PRIMARY KEY (periode, kode_dealer, idprospect)
+);
+
+CREATE TABLE dbo.ro_rpt_ssu (                    -- SSU per bulan per dealer
+  periode      char(7) NOT NULL,
+  kode_dealer  char(5) NOT NULL,                  -- sudah digabung ke pusat
+  ssu          int     NOT NULL,
+  CONSTRAINT PK_ro_rpt_ssu PRIMARY KEY (periode, kode_dealer)
+);
+
+CREATE TABLE dbo.ro_rpt_run (                    -- catatan eksekusi ETL
+  periode      char(7)  NOT NULL PRIMARY KEY,
+  started_at   datetime NOT NULL,
+  finished_at  datetime NULL,
+  status       varchar(10) NOT NULL,              -- RUNNING / OK / FAILED
+  is_partial   bit NOT NULL,                      -- 1 jika bulan belum penuh
+  message      varchar(500) NULL
+);
+
+-- View untuk halaman utama
+CREATE VIEW dbo.vw_ro_rpt_dealer AS
+SELECT s.periode, s.kode_dealer, d.dealerdesc AS nama_dealer, s.ssu,
+  SUM(CASE WHEN u.kelas='Sama' AND u.grp_crm=77 THEN 1 ELSE 0 END) AS sama_h1,
+  SUM(CASE WHEN u.kelas='Sama' AND u.grp_crm=78 THEN 1 ELSE 0 END) AS sama_h2ds,
+  SUM(CASE WHEN u.kelas='Sama' AND u.grp_crm=79 THEN 1 ELSE 0 END) AS sama_h2dl,
+  SUM(CASE WHEN u.kelas='Beda' AND u.grp_crm=77 THEN 1 ELSE 0 END) AS beda_h1,
+  SUM(CASE WHEN u.kelas='Beda' AND u.grp_crm=78 THEN 1 ELSE 0 END) AS beda_h2ds,
+  SUM(CASE WHEN u.kelas='Beda' AND u.grp_crm=79 THEN 1 ELSE 0 END) AS beda_h2dl
+FROM dbo.ro_rpt_ssu s
+LEFT JOIN dbo.ro_rpt_unit u ON u.periode = s.periode AND u.kode_dealer = s.kode_dealer
+LEFT JOIN dbo.consmstdealer d ON d.dealercode = s.kode_dealer
+GROUP BY s.periode, s.kode_dealer, d.dealerdesc, s.ssu;
+-- Catatan: dealer yang punya RO tetapi SSU = 0 tidak muncul dari view ini.
+-- Gunakan FULL OUTER JOIN antara ro_rpt_ssu dan agregat ro_rpt_unit bila ingin ikut ditampilkan.`;
+
+CODE.apiList=`GET /api/v1/ro-report?bulan=9&tahun=2026
+
+200 OK
+{
+  "periode": "2026-09",
+  "isPartial": true,
+  "generatedAt": "2026-10-02T02:15:00+07:00",
+  "total": 230,
+  "items": [
+    {
+      "kodeDealer": "A0000",
+      "namaDealer": "MPM Motor Jember 1",
+      "ssu": 508,
+      "sama":  { "crmH1": 157, "crmH2ds": 0, "crmH2dl": 0 },
+      "beda":  { "crmH1": 7,   "crmH2ds": 0, "crmH2dl": 0 },
+      "capaianRo": 0.3228
+    }
+  ]
+}`;
+
+CODE.apiDetail=`GET /api/v1/ro-report/A0000/prospects?bulan=9&tahun=2026&page=1&pageSize=10&q=budi
+
+200 OK
+{
+  "kodeDealer": "A0000",
+  "namaDealer": "MPM Motor Jember 1",
+  "periode": "2026-09",
+  "page": 1, "pageSize": 10, "total": 5,
+  "items": [
+    {
+      "no": 1,
+      "idLms": "LMS-0001",
+      "namaProspect": "Budi Contoh",
+      "idFlp": "FLP01",
+      "namaFlp": "Sales Satu",
+      "tipeProspect": "Add New",
+      "tglAssignAtauCreate": "2026-07-02T00:00:00",
+      "noTlp": "-",
+      "noHp": "081200000001",
+      "noHpLain": null,
+      "alamat": "Jl. Contoh No 1",
+      "kecamatan": "Kecamatan A",
+      "kabKota": "Kab. Contoh",
+      "sumberAwal": "-",
+      "sumberAkhir": "CRM H1",
+      "kategoriUnit": "Matic",
+      "unit": "Unit Matic 160",
+      "tipePembayaran": "Credit",
+      "tglFollowUp": "2026-07-05T00:00:00",
+      "lastFollowUp": "2026-07-05T00:11:32"
+    }
+  ]
+}`;
+
+CODE.apiErr=`400 Bad Request   { "code": "ERR-01", "message": "Bulan harus 1-12 dan tahun 4 digit." }
+401 Unauthorized  { "code": "ERR-02", "message": "Token tidak valid atau kedaluwarsa." }
+403 Forbidden     { "code": "ERR-03", "message": "Anda tidak berhak melihat dealer ini." }
+404 Not Found     { "code": "ERR-04", "message": "Kode dealer tidak ditemukan pada periode ini." }
+409 Conflict      { "code": "ERR-05", "message": "Data periode ini sedang dihitung ulang. Coba lagi beberapa menit." }
+503 Service Unavailable { "code": "ERR-06", "message": "Data periode ini belum tersedia." }
+500 Internal Server Error { "code": "ERR-99", "message": "Terjadi kesalahan pada server.", "traceId": "..." }`;
+
+CODE.etl=`Job: ro_report_etl   (jadwal harian pukul 02:00, bulan berjalan + 1 bulan sebelumnya dihitung ulang)
+
+1. Tulis ro_rpt_run (periode, status='RUNNING').
+2. SSU      : jalankan query SSU di srv1/MPMAX  -> gabungkan cabang ke pusat -> ganti isi ro_rpt_ssu periode itu.
+3. Billing  : jalankan query billing di sdms-mso + 663 DB NMSO -> tabel kerja stg_bill.
+4. Dealer   : tentukan kode_dealer per baris stg_bill (MSO via internal.iddealercode, NMSO via LEFT(idinternal,5))
+              -> terapkan ro_rpt_dealer_parent.
+5. Status RO: baca trxhistoryrobd (isSystem, idProspect, kodedealer). Simpan kodedealer sebagai kode_dealer_trx.
+              Untuk isSystem=0 cari prospek lama (nomor prospek sama, status Completed Drop) lalu bandingkan source-nya:
+              "Sama/Beda/Tanpa pembanding" (lihat Aturan Hitung 3.4). Simpan idprospect_lama dan source_awal.
+              Bandingkan kode_dealer dengan kode_dealer_trx (setelah cabang digabung); bila beda, tulis ke log ETL.
+6. Follow-up: untuk idprospect yang tidak ada di trxhistoryrobd, cek followuplms. Ada -> 'Sama'. Tidak ada -> buang.
+7. Dedup    : satu unit (idframe) dihitung sekali per periode. Bila ganda, 'Beda' didahulukan.
+7b. Detail  : untuk setiap dealer yang punya unit RO, jalankan rptKegiatanHarian (rentang satu bulan) di database dealernya,
+              sisakan [Id Prospect] yang ada di ro_rpt_unit, hapus duplikat, isi kolom Sumber Awal dari source prospek lama -> tabel kerja stg_detail.
+8. Simpan   : ganti isi ro_rpt_unit dan ro_rpt_detail untuk periode itu (DELETE periode + INSERT dalam satu transaksi pada DB reporting).
+9. Selesai  : ro_rpt_run status='OK', is_partial=1 bila periode = bulan berjalan.
+Gagal di langkah mana pun -> status='FAILED' + message, data periode lama TIDAK ditimpa (transaksi di langkah 8).`;
+
+const SP0=[
+['ringkas','1. Ringkasan',()=>`
+<h2>Ringkasan Spesifikasi Program</h2>
+<p class="lead">Report RO (repeat order) dibanding SSU per dealer per bulan, dibagi source awal SAMA / BEDA dan jenis CRM.</p>
+<div class="card"><div class="kv">
+<div>Nama fitur</div><div>Report RO per Source Awal per Dealer</div>
+<div>Halaman</div><div>(1) Rekap per dealer dengan filter Bulan dan Tahun. (2) Detail dealer (daftar prospek).</div>
+<div>Periode saat ini</div><div>Juli, Agustus, September 2026 (September belum penuh).</div>
+<div>Sifat akses data</div><div><b>Hanya baca (read-only).</b> Tidak ada INSERT/UPDATE/DELETE ke database sumber.</div>
+<div>Referensi hasil</div><div>Excel "Rekap RO per Source Awal per Dealer - Juli Agustus September 2026 (invoice) - fix.xlsx"</div>
+</div></div>
+<h3>Arti kolom di tampilan</h3>
+${T(['Kolom','Arti'],[
+['SSU isi nama','Jumlah unit terjual (unit unik no mesin) yang tanggal isi nama (TGLISINAMA) jatuh pada bulan terpilih.'],
+['Sama - CRM H1 / H2ds / H2dl','Jumlah unit RO ter-invoice pada bulan terpilih yang source awal prospeknya SAMA dengan source RO, dipecah per jenis CRM.'],
+['Beda - CRM H1 / H2ds / H2dl','Sama seperti di atas, tetapi source awalnya BERBEDA dari source RO.'],
+['Capaian RO (%)','(RO sama + RO beda) / SSU. Ada di Excel, belum ditampilkan di prototipe; API tetap mengirimnya.']])}
+<h3>Jenis CRM</h3>
+${T(['Kolom UI','prospect_source.idprosou','Deskripsi di database'],[
+['CRM H1','77','CRM Leads H1 - H1 (Hanya Beli)'],['CRM H2ds (H2 Own)','78','CRM Leads H2 Own - H1 (Beli & Servis), dealer sendiri'],['CRM H2dl (H2 Others)','79','CRM Leads H2 Others - H1 (Hanya Servis), dealer lain']])}
+<h3>Alur data tingkat tinggi</h3>
+<div class="flow">
+<div class="fb"><b>Sumber</b>srv1 MPMAX, srv2 sdms-mso + sdms_consolidation, srv3 NMSO (663 DB dealer)</div><div class="ar">&rarr;</div>
+<div class="fb"><b>Job ETL harian</b>Hitung SSU, RO ter-invoice, klasifikasi Sama/Beda, gabung cabang ke pusat</div><div class="ar">&rarr;</div>
+<div class="fb"><b>Tabel laporan</b>ro_rpt_ssu, ro_rpt_unit, ro_rpt_dealer_parent, ro_rpt_run</div><div class="ar">&rarr;</div>
+<div class="fb"><b>API REST</b>/api/v1/ro-report dan /prospects</div><div class="ar">&rarr;</div>
+<div class="fb"><b>Halaman web</b>Rekap per dealer dan Detail</div></div>
+<div class="warn"><b>Mengapa tidak query langsung dari API?</b> Data tersebar di 3 server dan 663 database dealer. Query real-time ke semuanya terlalu lambat dan membebani database produksi. Karena itu hasil dihitung terjadwal lalu API hanya membaca tabel laporan yang ringan.</div>`],
+
+['sumber','2. Sumber Data',()=>`
+<h2>Sumber Data dan Koneksi</h2>
+<p class="lead">Server, database, dan tabel yang dipakai. Kredensial tidak ditulis di dokumen ini; minta ke tim infrastruktur dan simpan di secret store, bukan di kode.</p>
+${T(['Alias','Server / Database','Isi','Dipakai untuk'],[
+['srv1','AX / MD &mdash; database <code>MPMAX</code>','Faktur penjualan <code>dbo.MPMINVFAKTUR</code>','SSU'],
+['srv2','<code>sdms-mso</code>','Transaksi dealer MSO: prospect, billing, followuplms, suspect, salesman, internal','RO ter-invoice dealer MSO, source, NIK, follow-up, detail prospek'],
+['srv2','<code>sdms_consolidation</code>','<code>trxhistoryrobd</code>, <code>consmstdealer</code>, <code>conscustomer</code>','Status RO (isSystem), nama dealer'],
+['srv3','663 database NMSO, nama <code>sdms-dlr-&lt;kode&gt;</code> (mis. <code>sdms-dlr-h0490</code>)','Struktur sama dengan sdms-mso, satu database per dealer','RO ter-invoice dealer NMSO, source, NIK, follow-up']])}
+<div class="warn">Jangan memakai database yang namanya berakhiran <code>_trn</code> (training/uji) untuk data laporan. Server dev lama juga tidak lengkap datanya.</div>
+<h3>Aturan akses database</h3>
+<ul>
+<li>Akun database untuk laporan hanya diberi hak <b>SELECT</b>.</li>
+<li>Semua query ke tabel transaksi memakai <code>(NOLOCK)</code> dan filter tanggal.</li>
+<li>Set command timeout (saran 300 detik) dan jalankan per database, bukan satu transaksi besar.</li>
+<li>Tabel <code>followuplms</code> hanya punya primary key. Hindari subquery per baris; pakai temp table lalu <code>IN</code>/<code>JOIN</code> satu kali.</li>
+<li>Untuk 663 database NMSO, jalankan paralel dengan batas (saran 3-5 koneksi bersamaan) agar server tidak terbebani.</li>
+</ul>
+<h3>Tabel yang disentuh</h3>
+${T(['Tabel','Database','Kolom yang dipakai','Keterangan'],[
+['<code>MPMINVFAKTUR</code>','MPMAX (srv1)','KDDEALER, ENGINENO, TGLISINAMA','SSU'],
+['<code>billing</code>','sdms-mso, NMSO','idbilling, billingnumber, dtcreate, idinternal, idbiltyp','Invoice. idbiltyp 10, 110-114 = penjualan kendaraan'],
+['<code>billing_cancel</code>','sdms-mso, NMSO','idbilling','Ada di sini = invoice batal, dibuang'],
+['<code>billing_item</code>, <code>order_billing_item</code>, <code>order_item</code>','sdms-mso, NMSO','idbilite, idordite, idorder, idframe, idmachine','Jalur dari invoice ke no rangka'],
+['<code>vehicle_sales_order</code>','sdms-mso, NMSO','idorder, idunitreq','Penghubung ke kebutuhan unit'],
+['<code>sales_unit_requirement</code>','sdms-mso, NMSO','idreq, idprospect, idprosou','Source RO yang benar (utamakan CRM)'],
+['<code>prospect</code>','sdms-mso, NMSO','idprospect, idprosou, dtcreated, idinternal','Source cadangan, tanggal prospek, dealer'],
+['<code>person_prospect</code>, <code>person</code>','sdms-mso, NMSO','idparty, personalidnumber','NIK pelanggan'],
+['<code>followuplms</code>','sdms-mso, NMSO','id_prospect, tanggalFollowUp, createdate, kodeTypeUnitProspect, metodePembayaranDeal, idinternal','Bukti follow-up CRM dan data halaman detail'],
+['<code>internal</code>','sdms-mso, NMSO','idinternal, iddealercode, idinternalpos, dealerstaging','Terjemah idinternal ke kode dealer dan peta cabang'],
+['<code>trxhistoryrobd</code>','sdms_consolidation','idProspect, isSystem, norangkaOld, tglisinamaOld, createddate, <b>kodedealer (kolom baru, akan ditambahkan)</b>','Data RO. Kolom <code>kodedealer</code> memberi kode dealer langsung per baris RO.'],
+['<code>consmstdealer</code>','sdms_consolidation','dealercode, dealerdesc','Nama dealer'],
+['<code>prospect_source</code>','sdms-mso, NMSO','idprosou, description','Nama source']])}
+<div class="warn"><b>Catatan data RO:</b> sampai saat ini data <code>trxhistoryrobd</code> yang dipakai untuk Excel berasal dari file Excel yang diberikan pengguna. Pada saat dokumen ini dibuat, tabel itu tidak terlihat di <code>sdms_consolidation</code> (srv2) yang dapat diakses penyusun dokumen. Untuk program produksi, developer membaca langsung dari tabel <code>trxhistoryrobd</code> di consolidation dan memastikan kolom di atas tersedia.</div>
+<h3>Penambahan kolom <code>kodedealer</code> di <code>trxhistoryrobd</code></h3>
+<div class="card">
+<p>Di consolidation akan ditambahkan kolom <code>kodedealer</code> pada <code>trxhistoryrobd</code>. Dampaknya pada program:</p>
+<ul>
+<li><b>Dealer RO tidak lagi dicari lewat jalur panjang</b> (idProspect, followuplms, internal, atau database NMSO). Kode dealer dibaca langsung dari <code>trxhistoryrobd.kodedealer</code>.</li>
+<li><b>Halaman detail</b> memakai kolom ini untuk memilih prospek milik dealer: <code>WHERE kodedealer = @kodeDealer</code> (lihat tab Spesifikasi Aplikasi, bagian halaman detail).</li>
+<li><b>Format yang diharapkan:</b> 5 karakter, contoh H0680. Developer menyeragamkannya dengan <code>UPPER(LTRIM(RTRIM(...)))</code>.</li>
+<li><b>Baris lama bisa kosong.</b> Bila <code>kodedealer</code> kosong, program memakai jalur lama sebagai cadangan.</li>
+<li><b>Cabang:</b> bila <code>kodedealer</code> bisa berisi kode cabang, tetap digabung ke pusat memakai <code>ro_rpt_dealer_parent</code>.</li>
+<li><b>Dealer di laporan tetap dealer penerbit invoice</b> (<code>billing.idinternal</code>), kecuali pemilik report memutuskan memakai <code>kodedealer</code>. Lihat pertanyaan di bagian Hal Belum Final.</li></ul></div>`],
+
+['tabelbaru','2b. Tabel Baru',()=>`
+<h2>Tabel Baru yang Harus Dibuat Developer</h2>
+<p class="lead">Dokumen ini hanya menjelaskan. <b>Semua tabel di bawah belum ada</b> di database mana pun dan <b>belum dibuat</b>. Pembuatannya dilakukan developer/DBA, bukan lewat akses baca-saja yang dipakai untuk menyusun dokumen ini.</p>
+<div class="warn"><b>Mengapa perlu tabel baru?</b> Angka laporan berasal dari 3 server dan 663 database dealer. Menghitungnya setiap kali halaman dibuka terlalu lambat dan membebani database produksi. Karena itu hasil dihitung terjadwal lalu disimpan di tabel laporan, dan API hanya membaca tabel itu.</div>
+<h3>Daftar tabel baru dan gunanya</h3>
+${T(['Tabel / View','Gunanya','Siapa yang mengisi','Siapa yang membaca','Perkiraan isi'],[
+['<code>ro_rpt_unit</code>','Menyimpan <b>satu baris per unit RO yang sudah di-invoice</b> (no rangka, no invoice, tanggal invoice, kode dealer, jenis CRM 77/78/79, kelas Sama/Beda, idprospect, asal data). Dari tabel inilah angka Sama/Beda per jenis CRM dihitung, dan unit yang membentuk tiap angka bisa ditelusuri.','Job ETL harian','View rekap dan halaman detail','Sekitar 5.000-15.000 baris per bulan (Juli-September 2026 total sekitar 28.000).'],
+['<code>ro_rpt_detail</code>','Menyimpan <b>daftar prospek RO per dealer per bulan</b> (20 kolom halaman detail), hasil dari procedure <code>rptKegiatanHarian</code> yang disaring ke prospek RO. Disimpan karena procedure itu berat jika dipanggil setiap halaman detail dibuka.','Job ETL harian','Halaman detail','Sekitar jumlah unit RO per bulan (5.000-15.000 baris).'],
+['<code>ro_rpt_ssu</code>','Menyimpan <b>SSU per bulan per dealer</b> hasil salinan dari <code>MPMAX.MPMINVFAKTUR</code> (database AX). Disalin ke sini supaya halaman tidak perlu menghubungi server AX setiap kali dibuka.','Job ETL harian','View rekap','Sekitar 230 baris per bulan.'],
+['<code>ro_rpt_dealer_parent</code>','<b>Peta cabang ke pusat</b>: kode cabang dan kode pusat, sumber penentuan, dan status (Digabung / Menunggu konfirmasi). Dipakai agar angka cabang dijumlahkan ke dealer pusat. Dipelihara manual karena 6 kode masih menunggu keputusan bisnis.','Diisi awal dari peta cabang yang sudah ada, lalu dipelihara admin/developer','Job ETL','Sekitar beberapa ratus baris, jarang berubah.'],
+['<code>ro_rpt_run</code>','<b>Catatan eksekusi ETL</b>: periode, waktu mulai/selesai, status (RUNNING/OK/FAILED), apakah bulan belum penuh, pesan. Dipakai untuk menampilkan "data belum penuh" dan "dihitung pada ...", serta mencegah dua proses berjalan bersamaan.','Job ETL','API (endpoint status)','Satu baris per periode.'],
+['<code>vw_ro_rpt_dealer</code> (view, bukan tabel)','<b>Rekap per dealer per bulan</b> yang langsung dipakai halaman utama: SSU dan 6 kolom Sama/Beda. Menggabungkan <code>ro_rpt_ssu</code>, <code>ro_rpt_unit</code>, dan nama dealer.','-','API (endpoint rekap)','Tidak menyimpan data sendiri.']])}
+<h3>Letak tabel</h3>
+${T(['Pilihan','Database / server','Penilaian'],[
+['<b>Saran</b>','<code>sdms_consolidation</code> di <b>srv2</b> (sisi SDMS)','Sudah berisi <code>trxhistoryrobd</code> dan <code>consmstdealer</code>, satu server dengan <code>sdms-mso</code>. Tabel laporan diberi awalan <code>ro_rpt_</code> agar mudah dikenali dan dipisah dari tabel lain.'],
+['Alternatif','Database laporan khusus (baru)','Lebih bersih dan terpisah dari data transaksi. Perlu dibuat dan disetujui tim infrastruktur.'],
+['<b>Tidak disarankan</b>','<code>MPMAX</code> di <b>srv1</b> (sisi MD/AX)','Itu database AX milik tim lain. Dalam program ini MPMAX hanya dibaca untuk mengambil SSU. Jangan ditulisi.'],
+['<b>Tidak disarankan</b>','<code>sdms-mso</code> atau 663 database NMSO','Itu database transaksi dealer produksi. Tabel laporan jangan dicampur di sana.']])}
+<div class="warn"><b>Keputusan final ada di developer dan DBA.</b> Nama database di atas hanya saran. Yang perlu dipastikan sebelum membangun: (1) database tujuan, (2) akun database yang boleh menulis ke tabel <code>ro_rpt_*</code> saja, dan (3) tempat job ETL berjalan (SQL Agent atau layanan terjadwal).</div>
+<h3>Aturan akses</h3>
+${T(['Sisi','Hak yang dibutuhkan'],[
+['Database sumber: <code>MPMAX</code>, <code>sdms-mso</code>, 663 NMSO, <code>sdms_consolidation</code> (tabel yang sudah ada)','<b>SELECT saja.</b> Tidak ada tulis, ubah, atau hapus.'],
+['Tabel baru <code>ro_rpt_*</code>','Akun ETL: SELECT, INSERT, DELETE (hanya pada tabel ini). Akun API: SELECT saja.']])}
+<p>Rancangan kolom lengkap (DDL) dan langkah ETL ada di tab "Spesifikasi Aplikasi", bagian Rancangan API. DDL itu <b>contoh rancangan untuk developer</b> dan belum dijalankan di database mana pun.</p>`],
+
+['hitung','3. Aturan Hitung',()=>`
+<h2>Aturan Hitung</h2>
+<p class="lead">Logika yang menghasilkan angka di Excel. Developer wajib mengikuti urutan ini agar hasilnya sama dengan Excel referensi.</p>
+<h3>3.1 SSU</h3>
+<ul><li>Hitung jumlah <code>ENGINENO</code> unik di <code>MPMAX.dbo.MPMINVFAKTUR</code>, dikelompokkan per bulan <code>TGLISINAMA</code> dan <code>KDDEALER</code>.</li>
+<li>Faktur batal tetap ikut dihitung (mengikuti SP autoclaim).</li><li>Cabang digabung ke pusat (3.5).</li></ul>
+<h3>3.2 Jumlah RO (unit ter-invoice)</h3>
+<ol>
+<li>Ambil unit yang sudah di-invoice pada bulan terpilih (query billing di tab Query).</li>
+<li>Hanya jenis billing penjualan kendaraan (<code>idbiltyp</code> 10, 110, 111, 112, 113, 114) dan tidak ada di <code>billing_cancel</code>.</li>
+<li>Hanya unit yang punya no rangka (<code>idframe</code>) dan source CRM (<code>idprosou</code> 77/78/79). Utamakan <code>sales_unit_requirement.idprosou</code>; bila bukan CRM, pakai <code>prospect.idprosou</code>.</li>
+<li>Satu unit (<code>idframe</code>) dihitung <b>sekali per bulan invoice</b>.</li>
+<li>Bulan ditentukan oleh tanggal invoice (<code>billing.dtcreate</code>), bukan tanggal prospek. Bulan invoice dan bulan SSU bisa berbeda; ini sengaja dibiarkan.</li></ol>
+<h3>3.3 Klasifikasi SAMA / BEDA</h3>
+${T(['Kondisi prospect','Hasil'],[
+['Ada di <code>trxhistoryrobd</code> dan <code>isSystem = 1</code>','<b>SAMA</b>'],
+['Ada di <code>trxhistoryrobd</code>, <code>isSystem = 0</code>, source prospek lama (sebelum drop) = source RO','<b>SAMA</b>'],
+['Ada di <code>trxhistoryrobd</code>, <code>isSystem = 0</code>, prospek lama tidak ditemukan (tanpa pembanding) <i>(usulan, menunggu konfirmasi)</i>','<b>SAMA</b>'],
+['Ada di <code>trxhistoryrobd</code>, <code>isSystem = 0</code>, source prospek lama (sebelum drop) berbeda dari source RO','<b>BEDA</b>'],
+['Ada di <code>trxhistoryrobd</code> tetapi source RO bukan CRM','Dibuang'],
+['Tidak ada di <code>trxhistoryrobd</code>, punya minimal 1 follow-up di <code>followuplms</code>','<b>SAMA</b>'],
+['Tidak ada di <code>trxhistoryrobd</code> dan tanpa follow-up','Dibuang']])}
+<p>Bila satu unit muncul ganda dengan kelas berbeda, <b>BEDA didahulukan</b> karena berasal dari perbandingan source prospek lama.</p>
+<h3>3.4 Source awal = source prospek sebelum di-drop</h3>
+<div class="ok"><b>Aturan dari pemilik report.</b> Baris <code>trxhistoryrobd</code> dengan <code>isSystem = 0</code> adalah hasil pengecekan sistem. Sistem men-<b>drop</b> prospek lama lalu <b>membuat prospek baru</b>; <code>trxhistoryrobd.idProspect</code> berisi prospek baru itu. <b>Source awal = source prospek lama sebelum di-drop.</b></div>
+<p>Tabel <code>trxhistoryrobd</code> tidak menyimpan id prospek lama. Prospek lama dicari di database yang sama lewat tiga petunjuk berikut (sudah dicek pada contoh data):</p>
+<ol>
+<li><b>Nomor prospek sama:</b> <code>prospect.prospectnumber</code> prospek lama = prospek baru, dan <code>prospect.idprospect</code> berbeda.</li>
+<li><b>Status drop:</b> prospek lama punya status <code>Completed Drop</code> (<code>status_type.idstatustype = 56</code>) di <code>prospect_status</code>. Sebelumnya biasanya <code>Cancel</code> (13). Waktu status drop sangat dekat (hitungan detik) dengan <code>dtcreated</code> prospek baru.</li>
+<li><b>Source:</b> ambil <code>prospect.idprosou</code> prospek lama (deskripsi di <code>prospect_source</code>), bandingkan dengan source RO (77/78/79 pada prospek baru).</li></ol>
+<p>Contoh (dealer C0041): prospek lama source <b>Refferal</b> (13) di-drop pukul 15:21:32.420, prospek baru source <b>CRM H1</b> (77) dibuat pukul 15:21:32.960. Source awal = Refferal, source RO = CRM H1, hasil <b>BEDA</b>.</p>
+<p><b>Hasil uji sampel</b> (1.171 prospek <code>isSystem = 0</code>: 300 pertama dari sdms-mso dan 3 database dealer dengan RO terbanyak, bukan seluruh data): 89% punya prospek lain bernomor prospek sama; 67% di antaranya prospek lamanya berstatus Completed Drop, dan sourcenya berbeda dari source RO pada hampir semuanya; sekitar 11% tidak punya prospek lain sama sekali.</p>
+<h3>Aturan pemilihan yang menunggu konfirmasi</h3>
+${T(['Kasus','Usulan sementara'],[
+['Prospek lama ada tetapi tidak berstatus Completed Drop','Tetap dipakai sebagai source awal (pilih prospek lama yang dibuat sebelum prospek baru).'],
+['Prospek lama tidak ditemukan','Tanpa pembanding, dihitung <b>SAMA</b> (sama seperti aturan sebelumnya).'],
+['Prospek lama lebih dari satu','Pakai yang paling baru dibuat sebelum prospek baru (<code>dtcreated</code> lebih kecil dari prospek baru).'],
+['Prospek lama tanpa source (<code>idprosou</code> kosong)','Dilewati, ambil prospek lama berikutnya yang bersource.']])}
+<div class="warn"><b>Angka berubah.</b> Angka di Excel referensi (lihat contoh angka di bawah) dihitung dengan cara lama, yaitu source prospek <b>paling awal bernik sama</b> di seluruh database. Dengan aturan baru, hasil Sama/Beda kemungkinan berbeda. Angka itu perlu dihitung ulang sebelum dipakai untuk menguji program.</div>
+<h3>3.5 Kode dealer dan penggabungan cabang</h3>
+<ul>
+<li>Dealer = dealer penerbit invoice (<code>billing.idinternal</code>), bukan dealer prospek.</li>
+<li>Kolom baru <code>trxhistoryrobd.kodedealer</code> dipakai untuk (a) mengisi dealer RO tanpa jalur panjang, (b) memilih prospek di halaman detail, dan (c) mencocokkan dengan dealer penerbit invoice. Bila keduanya berbeda, catat di log ETL; angka laporan tetap memakai dealer penerbit invoice sampai ada keputusan bisnis.</li>
+<li>Database MSO: kode dealer = <code>internal.iddealercode</code> dari <code>idinternal</code>.</li>
+<li>Database NMSO: kode dealer = 5 karakter pertama <code>idinternal</code> (mis. H049001 menjadi H0490).</li>
+<li>Cabang digabung ke pusat memakai tabel peta <code>ro_rpt_dealer_parent</code>. Untuk MSO, acuannya kolom <code>idinternalpos</code>/<code>dealerstaging</code> di tabel <code>internal</code>. Untuk NMSO, digabung hanya bila nama perusahaan cocok.</li>
+<li><code>idinternal</code> kosong atau tidak terpetakan: tampilkan sebagai baris "(TIDAK TERPETAKAN)" agar tidak hilang diam-diam.</li></ul>
+<div class="warn"><b>Belum final:</b> 6 kode cabang belum digabung karena menunggu konfirmasi bisnis: D0080 (ke D0280), H0370 (ke F0680), G0010/G0011/G0012 (ke G0170), H5200 (ke H0490). Isi tabel peta dengan <code>status = 'Menunggu konfirmasi'</code> dan jangan digabung sampai ada keputusan.</div>
+<h3>3.6 Capaian RO</h3>
+<pre>capaianRo = (sama.crmH1 + sama.crmH2ds + sama.crmH2dl + beda.crmH1 + beda.crmH2ds + beda.crmH2dl) / ssu
+jika ssu = 0 maka capaianRo = null (tampilkan kosong, jangan bagi nol)</pre>
+<h3>3.7 Contoh angka (validasi hasil)</h3>
+${T(['Bulan','SSU','Unit RO ter-invoice','Sama H1/H2ds/H2dl','Beda H1','Capaian'],[
+['Juli 2026','57.220','5.010','2.445 / 313 / 76','2.176','8,76%'],['Agustus 2026','55.387','8.938','3.994 / 277 / 36','4.631','16,14%'],['September 2026 (belum penuh)','52.248','14.435','5.019 / 174 / 54','9.188','27,63%']])}
+<p>Hasil program harus cocok dengan angka ini untuk periode yang sama. Beda H2ds dan H2dl pada hasil terakhir bernilai 0.</p>`],
+
+['main','4. Binding Halaman Utama',()=>`
+<h2>Binding Data Halaman Utama</h2>
+<p class="lead">Setiap kolom di tabel rekap, sumbernya, dan cara mengisinya. Label status: ${TAG.v} kolom/tabel sudah dicek ada di database; ${TAG.d} dihitung dari kolom lain; ${TAG.u} logika disarankan; ${TAG.c} sumber belum dipastikan.</p>
+<h3>Kontrol filter</h3>
+${T(['Kontrol UI','Tipe','Nilai default','Parameter API','Aturan'],[
+['Bulan','Dropdown Januari-Desember','Bulan berjalan; bila belum ada datanya, bulan terakhir yang ada datanya','<code>bulan</code> (1-12)','Wajib. Di luar 1-12 menjadi ERR-01.'],
+['Tahun','Dropdown','Tahun berjalan','<code>tahun</code> (4 digit)','Wajib.'],
+['Tombol FILTER','Tombol','-','Memanggil ulang API','Mengganti isi tabel sesuai bulan dan tahun.'],
+['Tombol Clear','Tombol','-','-','Mengosongkan semua kotak Cari kolom dan mengembalikan bulan/tahun ke default.'],
+['Tombol EXPORT','Tombol','-','<code>GET /ro-report/export</code>','Mengunduh hasil yang sedang tampil ke CSV.'],
+['Kotak Cari tiap kolom','Teks','kosong','Disaring di sisi klien','Berisi (contains), tidak peka huruf besar/kecil. Semua kotak digabung dengan AND. Total baris sekitar 230 dealer, cukup disaring di klien.']])}
+<h3>Kolom tabel</h3>
+${T(['No','Kolom UI','Sumber','Tabel.kolom','Cara mengambil','Status'],[
+['1','(Tombol Detail)','-','-','Tautan ke halaman detail dengan <code>kodeDealer</code>, <code>bulan</code>, <code>tahun</code>. Nama kolom dikosongkan.',TAG.d],
+['2','Kode Dealer','SSU dan billing','<code>MPMINVFAKTUR.KDDEALER</code>; <code>internal.iddealercode</code> (MSO); <code>LEFT(billing.idinternal,5)</code> (NMSO)','Seragamkan 5 karakter huruf besar, lalu terapkan peta cabang ke pusat. Daftar dealer = gabungan dealer yang punya SSU atau RO pada bulan itu.',TAG.v],
+['3','Nama Dealer','Master dealer','<code>consmstdealer.dealerdesc</code> (dealercode = kode dealer)','Left join dari kode dealer. Kosong bila tidak ada.',TAG.v],
+['4','SSU isi nama','Faktur AX','<code>MPMINVFAKTUR.ENGINENO</code> (hitung unik)','Query SSU, <code>TGLISINAMA</code> pada bulan terpilih, per <code>KDDEALER</code>. Cabang dijumlahkan ke pusat.',TAG.v],
+['5','Sama - CRM H1','Unit RO','<code>ro_rpt_unit</code>','Hitung <code>idframe</code> unik dengan <code>kelas=Sama</code> dan <code>grp_crm=77</code>.',TAG.d],
+['6','Sama - CRM H2ds','Unit RO','<code>ro_rpt_unit</code>','<code>kelas=Sama</code>, <code>grp_crm=78</code>.',TAG.d],
+['7','Sama - CRM H2dl','Unit RO','<code>ro_rpt_unit</code>','<code>kelas=Sama</code>, <code>grp_crm=79</code>.',TAG.d],
+['8','Beda - CRM H1','Unit RO','<code>ro_rpt_unit</code>','<code>kelas=Beda</code>, <code>grp_crm=77</code>.',TAG.d],
+['9','Beda - CRM H2ds','Unit RO','<code>ro_rpt_unit</code>','<code>kelas=Beda</code>, <code>grp_crm=78</code>.',TAG.d],
+['10','Beda - CRM H2dl','Unit RO','<code>ro_rpt_unit</code>','<code>kelas=Beda</code>, <code>grp_crm=79</code>.',TAG.d]])}
+<h3>Perilaku tabel</h3>
+<ul>
+<li>Urutan baris: kode dealer naik. Angka rata kanan, format ribuan Indonesia (titik).</li>
+<li>Tombol Detail membuka halaman detail dan membawa kode dealer serta bulan/tahun. Tombol "Kembali" mengembalikan ke bulan yang sama.</li>
+<li>Bila tidak ada data pada bulan terpilih, tampilkan "Tidak ada data".</li>
+<li>Bila <code>isPartial = true</code>, tampilkan keterangan "Data belum penuh, bulan masih berjalan" di atas tabel.</li>
+<li>Dealer yang punya RO tetapi SSU = 0 tetap ditampilkan (SSU 0). Baris "(TANPA KODE DEALER)" muncul bila ada unit tanpa dealer dan jangan dihapus.</li></ul>`],
+
+['detail','5. Binding Halaman Detail',()=>`
+<h2>Binding Data Halaman Detail Dealer</h2>
+<p class="lead">Halaman detail memakai data yang sama dengan menu <b>Report &rarr; Kegiatan Harian</b> di DMS H1. Judul halaman: <code>Dealer &lt;kodeDealer&gt; - &lt;namaDealer&gt;</code>. Catatan di atas tabel mengikuti Excel: "tgl isi berdasarkan tipe prospect, kalau add new = tgl create suspect, kalau new assign = tgl assign dealer".</p>
+<div class="ok"><b>Sumber yang ditemukan.</b> Menu <code>H1_REPORT_KEGIATAN_HARIAN</code> (tabel <code>jhi_menu</code>, induk <code>H1_REPORT</code>, urutan 12) mengambil datanya dari stored procedure <b><code>dbo.rptKegiatanHarian</code></b>. Procedure ini ada di <code>sdms-mso</code> (srv2) dan di database dealer NMSO (srv3). Kolom keluarannya sama dengan sheet "detail data". Definisinya hanya <b>dibaca</b>; procedure tidak dijalankan oleh penyusun dokumen ini.</div>
+<h3>Parameter procedure</h3>
+${T(['Parameter','Tipe','Arti','Nilai untuk halaman detail'],[
+['<code>@pdDateFrom</code>','datetime','Awal rentang tanggal follow-up','Tanggal 1 bulan yang dipilih, pukul 00:00'],
+['<code>@pdDateThru</code>','datetime','Akhir rentang tanggal follow-up','Hari terakhir bulan itu, pukul 23:59:59'],
+['<code>@pdNamaCabang</code>','varchar(5) di MSO, varchar(10) di NMSO','<b>idinternal</b> dealer/cabang (bukan nama). Dicocokkan ke <code>prospect.idinternal</code>.','idinternal milik dealer (lihat bawah)'],
+['<code>@pdKorsal</code>','varchar(100)','Filter koordinator sales (<code>salesman.idcoordinator</code>); kosong = semua','Kosong (<code>\'\'</code>)']])}
+<div class="warn">Bila <code>@pdDateFrom</code> dan <code>@pdDateThru</code> jatuh pada hari yang sama, procedure memakai mode "satu hari" (kolom Tgl FollowUp diisi tanggal follow-up pertama pada hari itu). Untuk rentang sebulan, Tgl FollowUp = <code>prospect.dtfollowup</code>.</div>
+<h3>Cara halaman detail memakai procedure</h3>
+<ol>
+<li>Dari kode dealer di baris yang diklik, cari <b>idinternal</b> dealer itu. Database MSO: semua <code>internal.idinternal</code> dengan <code>iddealercode</code> = kode dealer. Database NMSO: database <code>sdms-dlr-&lt;kode&gt;</code>, idinternal berawalan 5 karakter kode dealer (mis. H049001). Bila dealer pusat punya cabang (peta <code>ro_rpt_dealer_parent</code>), ulangi untuk setiap cabang lalu gabungkan hasilnya.</li>
+<li>Panggil <code>rptKegiatanHarian</code> untuk setiap idinternal dengan rentang satu bulan terpilih dan <code>@pdKorsal = ''</code> (contoh ada di tab Query).</li>
+<li>Sisakan hanya prospek yang termasuk RO dealer itu pada bulan itu: <code>[Id Prospect]</code> ada di <code>ro_rpt_unit</code> (kode dealer dan bulan yang sama). Dengan kolom baru <code>trxhistoryrobd.kodedealer</code>, pencocokan ke dealer bisa langsung memakai kolom itu.</li>
+<li>Tampilkan 20 kolom di bawah.</li></ol>
+<div class="warn"><b>Jangan memanggil procedure langsung dari API setiap halaman dibuka.</b> Procedure ini berat (banyak join, temp table, subquery per baris) dan bisa lambat di dealer yang datanya besar. Rancangan yang disarankan: job harian menjalankan procedure per dealer per bulan lalu menyimpan hasil terpilihnya di tabel baru <code>ro_rpt_detail</code> (20 kolom + <code>periode</code>, <code>kode_dealer</code>, <code>idprospect</code>). API halaman detail hanya membaca tabel itu.</div>
+<h3>Pemetaan 20 kolom ke keluaran <code>rptKegiatanHarian</code></h3>
+<p>${TAG.v} = kolom keluaran procedure yang dibaca langsung dari definisinya. ${TAG.u} = logika disarankan. ${TAG.c} = tidak ada di keluaran procedure, sumber perlu dikonfirmasi.</p>
+${T(['No','Kolom UI','Kolom keluaran procedure','Asal tabel.kolom di procedure','Catatan','Status'],[
+['1','No','-','-','Nomor urut baris, dibuat saat menampilkan.',TAG.d],
+['2','id data (LMS)','(tidak ada)','-','Tidak ada di procedure. Pada contoh Excel kolom ini kosong. Konfirmasi: apakah <code>followuplms.id_lead</code>?',TAG.c],
+['3','Nama Prospect','<code>[Nama Prospect]</code>','<code>CONCAT(person.fname, \' \', person.lname)</code> lewat <code>person_prospect</code>','Nama depan + belakang.',TAG.v],
+['4','ID FLP','<code>[idsalesman]</code>','<code>prospect.idsalesman</code>','Procedure memberi id party role sales; Excel menyebut "ID FLP" (kemungkinan <code>salesman.IDFLPMD</code>, tidak ada di procedure). Konfirmasi.',TAG.c],
+['5','Nama FLP','<code>[salesman]</code>','<code>CONCAT(person.fname, \' \', person.lname)</code> dari <code>prospect.idsalesman</code>','Nama sales yang memegang prospek.',TAG.u],
+['6','Tipe Prospect','<code>[Tipe Prospect]</code>','<code>prospect_source.idprosou</code>, <code>status_type.idstatustype</code>','<code>idprosou = 15</code> dan status bukan 10 &rarr; "New Assign"; status 10 &rarr; "Workload"; selain itu "Add New". Procedure membuang status 10, jadi "Workload" tidak pernah muncul.',TAG.v],
+['7','tgl assign FLP / create suspect','(tidak ada)','-','Tidak ada di procedure. Excel: Add New = tgl create suspect, New Assign = tgl assign dealer. Konfirmasi sumbernya (kemungkinan <code>prospect.dtcreated</code> / tanggal assign).',TAG.c],
+['8','No Tlp','<code>[No Tlp]</code>','<code>person.phone</code>','"-" bila kosong.',TAG.v],
+['9','No HP','<code>[No HP]</code>','<code>person.cellphone1</code>','"-" bila kosong.',TAG.v],
+['10','No HP Lain','<code>[No HP Lain]</code>','<code>person.cellphone2</code>','"-" bila kosong.',TAG.v],
+['11','Alamat','<code>[Alamat]</code>','<code>postal_address.address1</code> lewat <code>party_contact_mechanism</code>','Hanya address1.',TAG.v],
+['12','Kecamatan','<code>[Kecamatan]</code>','<code>geo_boundary.description</code> (<code>postal_address.iddistrict</code>)','',TAG.v],
+['13','Kabupaten/Kota','<code>[Kabupaten/Kota]</code>','<code>geo_boundary.description</code> (<code>postal_address.idcity</code>)','',TAG.v],
+['14','Sumber Prospect Awal','(tidak ada)','-','Tidak ada di procedure. Diambil dari <b>source prospek lama sebelum di-drop</b> (aturan hitung 3.4); "-" bila tanpa pembanding.',TAG.u],
+['15','Sumber Prospect Akhir','<code>[Sumber Prospect]</code>','<code>prospect_source.description</code> dari <code>prospect.idprosou</code>','Pada RO CRM: CRM H1 / H2 Own / H2 Others (77/78/79).',TAG.v],
+['16','Kategori Unit','<code>[Kategori Unit]</code>','<code>product_category.description</code> lewat <code>communication_event_prospect.idproduct</code> dan <code>product_category_impl</code>','Hanya kategori 101, 1001-1005 (atau kosong).',TAG.v],
+['17','Unit','<code>[Unit]</code>','<code>product.name</code> dari <code>communication_event_prospect.idproduct</code>','',TAG.v],
+['18','Tipe Pembayaran','<code>[Tipe Pembayaran]</code>','<code>sale_type.description</code> dari <code>communication_event_prospect.idsaletype</code>','Cash / Credit.',TAG.v],
+['19','Tgl FollowUp','<code>[Tgl FollowUp]</code>','<code>prospect.dtfollowup</code> (rentang lebih dari satu hari)','Mode satu hari memakai <code>MIN(communication_event.dtfrom)</code>.',TAG.v],
+['20','Last Followup','<code>[Last Followup]</code>','<code>MAX(communication_event.dtfrom)</code> per prospek (setelah proses UPDATE di procedure)','Waktu follow-up terakhir.',TAG.v]])}
+<h3>Kolom lain yang tersedia di keluaran procedure (tidak ada di Excel)</h3>
+<p><code>prospectnumber</code>, <code>[Id Prospect]</code>, <code>[Desa/Kelurahan]</code>, <code>[Tipe Customer]</code>, <code>[Lokasi Prospect]</code>, <code>[Lokasi/Event]</code>, <code>[Tipe Event]</code>, <code>[Nama Reference]</code>, <code>[No telp Reference]</code>, <code>[Nama Refferal]</code>, <code>[No Telp Refferal]</code>, <code>[Nama Makelar]</code>, <code>[No Telp Makelar]</code>, <code>[Nama Magang]</code>, <code>[QTY]</code>, <code>[Next Followup]</code>, <code>[Katagori Prospect]</code> (status terakhir, "Complete" bila sudah ada billing), <code>[organization]</code>, <code>[Followup Via]</code>, <code>[Warna]</code>, <code>[Rencana Beli]</code>, <code>[Catatan]</code>, <code>billingnumber</code>. Dapat ditambahkan ke halaman bila diminta.</p>
+<h3>Perlu diperhatikan developer</h3>
+<ul>
+<li><b>Versi procedure berbeda.</b> Versi di <code>sdms-mso</code> dibuat/diubah 2026-08-31 (ada versi cadangan <code>rptKegiatanHarian_BAK20260831</code>). Versi di NMSO (contoh <code>sdms-dlr-h0490</code>) terakhir diubah 2021-11-25 dan parameter <code>@pdNamaCabang</code>-nya <code>varchar(10)</code>. Definisi di NMSO <b>belum dibandingkan</b>; developer wajib memeriksa kolom keluarannya sama.</li>
+<li><b>Kriteria baris belum final.</b> Procedure mengambil prospek yang <i>punya aktivitas follow-up</i> pada rentang tanggal (<code>communication_event.dtfrom</code>), memakai status prospek yang sedang berlaku, dan status bukan "Workload". Apakah halaman detail RO persis begitu, lalu dipersempit ke prospek RO dealer, perlu dikonfirmasi pemilik report. Di Excel hanya dealer A0000 yang punya detail (5 baris), padahal rekap A0000 Juli = 97 unit RO.</li>
+<li><b>Prospek tanpa follow-up</b> pada bulan itu tidak muncul di procedure, walaupun termasuk RO (dihitung Sama lewat <code>trxhistoryrobd</code>). Ini bisa membuat jumlah baris detail lebih kecil dari angka rekap.</li>
+<li><b>Prospek ganda.</b> Procedure memakai <code>SELECT DISTINCT</code> dan <code>GROUP BY</code> dengan banyak kolom; satu prospek bisa muncul lebih dari satu baris bila datanya berbeda. ETL harus menghapus duplikat per <code>[Id Prospect]</code>.</li></ul>
+<h3>Perilaku halaman</h3>
+<ul>
+<li>Setiap kolom punya kotak Cari (berisi, tidak peka huruf besar/kecil, digabung AND). Untuk daftar panjang, kirim sebagai parameter <code>q</code> dan filter per kolom ke API (server-side paging).</li>
+<li>Paging 10 baris per halaman. Tombol "Kembali" ke halaman rekap, tombol EXPORT mengunduh CSV hasil saring.</li>
+<li>Tanggal ditampilkan <code>yyyy-MM-dd</code>; waktu bila ada <code>yyyy-MM-dd HH:mm</code>. Nilai kosong ditampilkan "-" pada kolom yang memakainya (No Tlp, No HP, No HP Lain).</li>
+<li>Dealer tanpa detail: tampilkan "Belum ada detail data untuk dealer ini".</li></ul>`],
+
+['sql','6. Query SQL',()=>`
+<h2>Query SQL Referensi</h2>
+<p class="lead">Query yang dipakai untuk menghasilkan angka di Excel. Ganti parameter tanggal sesuai bulan. Semua hanya SELECT.</p>
+<h3>6.1 SSU per dealer (srv1 / MPMAX)</h3>${code('ssu')}
+<h3>6.2 Unit RO ter-invoice (sdms-mso dan setiap DB NMSO)</h3>${code('bill')}
+<h3>6.3 Status RO (sdms_consolidation)</h3>${code('ro')}
+<h3>6.4 Source awal (source prospek lama sebelum di-drop)</h3>${code('nik')}
+<h3>6.5 Cek follow-up CRM</h3>${code('fu')}
+<h3>6.6 Kode dealer dan nama dealer</h3>${code('dealer')}
+<h3>6.7 Data halaman detail (menu Report &rarr; Kegiatan Harian)</h3>${code('kh')}
+<div class="ok">Jalankan query 6.2, 6.4, dan 6.5 di <b>sdms-mso</b> dan di <b>setiap database NMSO</b>, lalu gabungkan hasilnya di ETL. Untuk database NMSO, tandai asal baris dengan nama databasenya agar mudah ditelusuri (kolom <code>sumber_db</code>).</div>`],
+
+['api','7. Rancangan API',()=>`
+<h2>Rancangan API</h2>
+<p class="lead">REST + JSON, versi <code>v1</code>. Teknologi bebas (mis. .NET, Node, Java); yang penting kontrak berikut dipatuhi. API hanya membaca tabel laporan (bukan langsung ke 663 database).</p>
+<h3>7.1 Ringkasan endpoint</h3>
+${T(['Method','Path','Fungsi','Dipakai di'],[
+['GET','<code>/api/v1/ro-report</code>','Rekap per dealer untuk satu bulan','Halaman utama'],
+['GET','<code>/api/v1/ro-report/{kodeDealer}/prospects</code>','Daftar prospek satu dealer (20 kolom)','Halaman detail'],
+['GET','<code>/api/v1/ro-report/export</code>','CSV rekap (atau CSV detail bila ada <code>kodeDealer</code>)','Tombol EXPORT'],
+['GET','<code>/api/v1/ro-report/status</code>','Status ETL terakhir periode itu','Keterangan "data belum penuh"']])}
+<h3>7.2 Parameter</h3>
+${T(['Endpoint','Parameter','Tipe','Wajib','Keterangan'],[
+['<code>/ro-report</code>','bulan','int 1-12','Ya','Bulan laporan.'],
+['','tahun','int','Ya','Tahun laporan.'],
+['','q','string','Tidak','Saring kode/nama dealer (opsional; filter per kolom bisa di klien).'],
+['<code>/ro-report/{kodeDealer}/prospects</code>','kodeDealer','string (path)','Ya','5 karakter, mis. A0000.'],
+['','bulan, tahun','int','Ya','Sama seperti di atas.'],
+['','page, pageSize','int','Tidak','Default 1 dan 10, maksimum pageSize 100.'],
+['','q','string','Tidak','Cari di semua kolom teks.'],
+['','sort','string','Tidak','Nama kolom, awalan <code>-</code> untuk turun.'],
+['<code>/ro-report/export</code>','bulan, tahun, kodeDealer?','-','-','Mengembalikan <code>text/csv</code> dengan BOM UTF-8.']])}
+<h3>7.3 Contoh respons: rekap</h3>${code('apiList')}
+<h3>7.4 Contoh respons: detail</h3>${code('apiDetail')}
+<h3>7.5 Kode kesalahan</h3>${code('apiErr')}
+<h3>7.6 Keamanan</h3>
+<ul>
+<li>Otentikasi memakai sesi/token DMS yang sudah ada (Bearer). Tanpa token menghasilkan 401.</li>
+<li>Hak akses: <b>perlu keputusan bisnis</b>. Apakah user dealer hanya boleh melihat dealernya sendiri, atau semua dealer (pusat)? Bila dibatasi, filter di server berdasarkan kode dealer user, dan beri 403 untuk dealer lain.</li>
+<li>Seluruh parameter divalidasi. Query ke database memakai parameter (bukan menyambung string) agar aman dari SQL injection.</li>
+<li>Data pribadi (nama, no HP, alamat) hanya dikirim di endpoint detail dan tidak dicatat di log.</li>
+<li>Data pembanding (id prospek lama, NIK) tidak dikirim ke klien; hanya nama source awal yang tampil.</li></ul>
+<h3>7.7 Tabel laporan dan view</h3>${code('ddl')}
+<h3>7.8 Job ETL</h3>${code('etl')}`],
+
+['nfr','8. Validasi dan Error',()=>`
+<h2>Validasi, Error Handling, dan Non-fungsional</h2>
+<h3>Validasi di tampilan</h3>
+${T(['Kasus','Perilaku'],[
+['Bulan/tahun tidak ada datanya','Tabel menampilkan "Tidak ada data". Jangan error.'],
+['Bulan berjalan belum selesai dihitung ETL','Tampilkan data terakhir yang ada dan keterangan waktu hitung (<code>generatedAt</code>).'],
+['API gagal / timeout','Pesan "Data tidak dapat dimuat. Coba lagi." dengan tombol Muat ulang.'],
+['EXPORT saat tabel kosong','Tombol tidak aktif.'],
+['Pencarian tanpa hasil','"Tidak ada data".']])}
+<h3>Kasus data yang harus ditangani</h3>
+${T(['Kasus','Penanganan'],[
+['7 idProspect tidak ditemukan di database mana pun','Dibuang dari hitungan dealer; catat di log ETL.'],
+['<code>idinternal</code> kosong atau tidak terpetakan','Masuk baris "(TIDAK TERPETAKAN)" / "(TANPA KODE DEALER)".'],
+['Dealer punya RO tetapi SSU = 0','Tetap ditampilkan; capaian kosong.'],
+['Prospek lama (sebelum drop) tidak ditemukan','Hasil "Tanpa pembanding" dan dihitung SAMA (usulan, menunggu konfirmasi).'],
+['Prospek awal tanpa source (<code>idprosou</code> kosong)','Dilewati; cari prospek awal berikutnya yang bersource.'],
+['Satu unit ganda dengan kelas berbeda','Hitung sekali; BEDA didahulukan.'],
+['Cabang belum dikonfirmasi digabung','Tetap berdiri sendiri sampai statusnya "Digabung".']])}
+<h3>Non-fungsional</h3>
+<ul>
+<li><b>Performa:</b> halaman utama maksimal 2 detik dari tabel laporan; ETL bulanan target kurang dari 60 menit.</li>
+<li><b>Ketersediaan data:</b> dihitung ulang harian untuk bulan berjalan dan bulan sebelumnya (karena invoice bisa masuk belakangan).</li>
+<li><b>Idempoten:</b> ETL boleh dijalankan ulang untuk periode yang sama; hasil periode itu diganti dalam satu transaksi.</li>
+<li><b>Audit:</b> <code>ro_rpt_run</code> mencatat waktu, status, dan pesan setiap eksekusi.</li>
+<li><b>Tanpa menulis ke database sumber:</b> hanya tabel laporan di database reporting yang ditulis.</li></ul>`],
+
+['buka','9. Hal Belum Final',()=>`
+<h2>Hal yang Belum Final</h2>
+<p class="lead">Mohon dijawab pemilik report sebelum atau saat pembangunan.</p>
+${T(['No','Pertanyaan / catatan','Dampak'],[
+['1','Konfirmasi penggabungan 6 kode cabang: D0080, H0370, G0010/G0011/G0012, H5200.','Angka dealer pusat berubah.'],
+['2','Kriteria baris halaman detail: prospek mana yang tampil, dan apakah jumlahnya harus sama dengan rekap?','Isi halaman detail.'],
+['3','Sumber kolom No HP Lain, Kategori Unit, dan Unit (master tipe unit/produk).','3 kolom detail masih kosong.'],
+['4','Arti pasti <code>suspect.salesdt</code> untuk "tgl create suspect" dan aturan Add New vs New Assign.','Kolom Tipe Prospect dan tanggal.'],
+['5','Hak akses: apakah user dealer hanya melihat dealernya sendiri?','Filter data dan kode 403.'],
+['6','Tanggal invoice dan tanggal isi nama (SSU) bisa beda bulan. Apakah perlu disamakan?','Capaian bisa lebih dari 100% atau terlalu kecil pada bulan tertentu.'],
+['7','Sumber <code>trxhistoryrobd</code> produksi: pastikan kolom idProspect, isSystem, norangkaOld, tglisinamaOld, createddate tersedia di <code>sdms_consolidation</code>.','ETL status RO.'],
+['8','Bulan berjalan belum penuh; tentukan apakah perlu label atau disembunyikan.','Tampilan.'],
+['9','Kolom baru <code>trxhistoryrobd.kodedealer</code>: apa artinya (dealer pembelian awal atau dealer yang melakukan RO), apakah bisa berisi kode cabang, dan apakah baris lama akan diisi ulang (backfill)?','Dasar penentuan dealer dan isi halaman detail.'],
+['10','Bila <code>kodedealer</code> berbeda dengan dealer penerbit invoice, angka dealer mana yang dipakai di laporan?','Angka per dealer berubah.'],
+['11','Apakah halaman detail memang = hasil menu Kegiatan Harian (<code>rptKegiatanHarian</code>) yang disaring ke prospek RO? Prospek RO tanpa follow-up pada bulan itu tidak muncul di procedure.','Jumlah baris detail bisa lebih kecil dari angka rekap.'],
+['12','Versi <code>rptKegiatanHarian</code> di database NMSO (diubah 2021) berbeda dari MSO (diubah 2026-08-31). Samakan atau pastikan kolom keluarannya sama.','Detail dealer NMSO.'],
+['13','Sumber kolom id data (LMS), ID FLP, dan tgl assign FLP / create suspect yang tidak ada di keluaran procedure.','3 kolom detail.'],
+['14','Source awal: bila prospek lama ada tetapi tidak berstatus Completed Drop, apakah tetap dipakai?','Jumlah Sama/Beda.'],
+['15','Source awal: bila prospek lama tidak ditemukan, apakah tetap dihitung SAMA?','Jumlah Sama.'],
+['16','Source awal: bila prospek lama lebih dari satu, apakah pakai yang paling baru sebelum prospek baru?','Jumlah Sama/Beda.'],
+['17','Angka Excel referensi dihitung dengan cara lama (source paling awal bernik sama). Perlu dihitung ulang dengan aturan source prospek lama sebelum dipakai menguji program.','Angka uji.']])}
+<div class="warn">Prototipe di tab "Tampilan" memakai data contoh. Angka asli ada di Excel referensi dan harus cocok dengan hasil program (lihat contoh angka di bagian Aturan Hitung).</div>`]
+];
+
+/* Susunan tab: (1) Database, (2) Spesifikasi Aplikasi, (3) Query */
+const byId=id=>SP0.find(s=>s[0]===id)[2];
+const part=ids=>ids.map(id=>'<section id="p-'+id+'">'+byId(id)()+'</section>').join('<hr style="border:0;border-top:2px solid #f0d9c4;margin:30px 0">');
+const APP=[['ringkas','Ringkasan'],['hitung','Aturan Hitung'],['main','Binding Halaman Utama'],['detail','Binding Halaman Detail'],['api','Rancangan API'],['nfr','Validasi dan Error'],['buka','Hal Belum Final']];
+const toc=()=>'<div class="card"><b>Isi halaman ini:</b> '+APP.map(a=>'<a href="#" data-go="p-'+a[0]+'" style="margin-right:12px;color:#2d7fd0">'+a[1]+'</a>').join('')+'</div>';
+const SP=[
+ ['db','Database',()=>part(['sumber','tabelbaru'])],
+ ['app','Spesifikasi Aplikasi',()=>toc()+part(APP.map(a=>a[0]))],
+ ['query','Query',byId('sql')]
+];
+
+/* render ribbon */
+let spCur='db';
+function renderSP(id){
+  spCur=id;
+  $('sb').innerHTML=SP.map(s=>'<button data-s="'+s[0]+'" class="'+(s[0]===id?'on':'')+'">'+s[1]+'</button>').join('');
+  $('sp').innerHTML=SP.find(s=>s[0]===id)[2]();
+  $('sb').querySelectorAll('button').forEach(b=>b.onclick=()=>{renderSP(b.dataset.s);window.scrollTo(0,0)});
+  $('sp').querySelectorAll('[data-go]').forEach(a=>a.onclick=e=>{e.preventDefault();const t=$(a.dataset.go);if(t)t.scrollIntoView({behavior:'smooth',block:'start'})});
+  $('sp').querySelectorAll('.cp').forEach(b=>b.onclick=()=>{
+    const t=CODE[b.dataset.c];
+    const done=()=>{b.textContent='Tersalin';setTimeout(()=>b.textContent='Salin',1200)};
+    (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(done).catch(()=>{const a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();try{document.execCommand('copy');done()}catch(e){}a.remove()});
+  });
+}
+document.querySelectorAll('#rb button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('#rb button').forEach(x=>x.classList.toggle('on',x===b));
+  $('m-proto').classList.toggle('hid',b.dataset.m!=='proto');
+  $('m-spec').classList.toggle('hid',b.dataset.m!=='spec');
+  if(b.dataset.m==='spec')renderSP(spCur);
+});
 </script>
 </body>
 </html>
